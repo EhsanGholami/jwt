@@ -22,14 +22,29 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 final class Configuration
 {
     /**
-     * @var array
+     * @var Parser
      */
-    private $data;
+    private $parser;
 
-    public function __construct()
-    {
-        $this->data = [];
-    }
+    /**
+     * @var Signer
+     */
+    private $signer;
+
+    /**
+     * @var ClaimFactory
+     */
+    private $claimFactory;
+
+    /**
+     * @var Parsing\Encoder
+     */
+    private $encoder;
+
+    /**
+     * @var Parsing\Decoder
+     */
+    private $decoder;
 
     public function createBuilder(): Builder
     {
@@ -38,71 +53,71 @@ final class Configuration
 
     public function getParser(): Parser
     {
-        if (!array_key_exists('parser', $this->data)) {
-            $this->data['parser'] = new Parser($this->getDecoder(), $this->getClaimFactory());
+        if ($this->parser === null) {
+            $this->parser = new Parser($this->getDecoder(), $this->getClaimFactory());
         }
 
-        return $this->data['parser'];
+        return $this->parser;
     }
 
     public function setParser(Parser $parser)
     {
-        $this->data['parser'] = $parser;
+        $this->parser = $parser;
     }
 
     public function getSigner(): Signer
     {
-        if (!array_key_exists('signer', $this->data)) {
-            $this->data['signer'] = new Sha256();
+        if ($this->signer === null) {
+            $this->signer = new Sha256();
         }
 
-        return $this->data['signer'];
+        return $this->signer;
     }
 
     public function setSigner(Signer $signer)
     {
-        $this->data['signer'] = $signer;
+        $this->signer = $signer;
     }
 
     private function getClaimFactory(): ClaimFactory
     {
-        if (!array_key_exists('claimFactory', $this->data)) {
-            $this->data['claimFactory'] = new ClaimFactory();
+        if ($this->claimFactory === null) {
+            $this->claimFactory = new ClaimFactory();
         }
 
-        return $this->data['claimFactory'];
+        return $this->claimFactory;
     }
 
     public function setClaimFactory(ClaimFactory $claimFactory)
     {
-        $this->data['claimFactory'] = $claimFactory;
-    }
-
-    public function setEncoder(Parsing\Encoder $encoder)
-    {
-        $this->data['encoder'] = $encoder;
+        $this->claimFactory = $claimFactory;
     }
 
     private function getEncoder(): Parsing\Encoder
     {
-        if (!array_key_exists('encoder', $this->data)) {
-            $this->data['encoder'] = new Parsing\Parser();
+        if ($this->encoder === null) {
+            $this->encoder = new Parsing\Parser();
         }
 
-        return $this->data['encoder'];
+        return $this->encoder;
     }
 
-    public function setDecoder(Parsing\Decoder $decoder)
+    public function setEncoder(Parsing\Encoder $encoder)
     {
-        $this->data['decoder'] = $decoder;
+        $this->encoder = $encoder;
     }
 
     private function getDecoder(): Parsing\Decoder
     {
-        if (!array_key_exists('decoder', $this->data)) {
-            $this->data['decoder'] = new Parsing\Parser();
+        if ($this->decoder === null) {
+            $this->decoder = new Parsing\Parser();
         }
 
-        return $this->data['decoder'];
+        return $this->decoder;
+    }
+
+    public function setDecoder(Parsing\Decoder $decoder)
+    {
+        $this->decoder = $decoder;
     }
 }
